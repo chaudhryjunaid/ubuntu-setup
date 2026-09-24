@@ -15,8 +15,10 @@ FROM=0
 ONLY=""
 while [ $# -gt 0 ]; do
     case "$1" in
-        --from) FROM="$2"; shift 2 ;;
-        --only) ONLY="$2"; shift 2 ;;
+        --from|--only)
+            [[ "${2:-}" =~ ^[0-9]+$ ]] || { echo "$1 needs a step number, e.g. $1 40" >&2; exit 1; }
+            if [ "$1" = --from ]; then FROM="$2"; else ONLY="$2"; fi
+            shift 2 ;;
         -h|--help) sed -n '3,10p' "$0"; exit 0 ;;
         *) echo "Unknown argument: $1" >&2; exit 1 ;;
     esac

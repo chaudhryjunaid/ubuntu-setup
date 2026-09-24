@@ -20,13 +20,8 @@ else
     fi
 fi
 
-log "Linking dotfiles"
-"$RCFILES/configure.sh"
-
-log "Git identity (~/.gitconfig.local)"
-email="$(git config -f "$HOME/.gitconfig.local" user.email 2>/dev/null || true)"
-if [ -n "$email" ] && [ "$email" != "your.email@example.com" ]; then
-    info "already set: $email"
-else
-    "$RCFILES/setup-git-identity.sh" </dev/tty
-fi
+# install.sh installs what the dotfiles need (antidote, bob + Neovim,
+# tree-sitter, Nerd Fonts, zsh as login shell), links them, and asks for the
+# git identity while ~/.gitconfig.local still has the placeholder.
+log "rcfiles install.sh"
+"$RCFILES/install.sh" </dev/tty

@@ -31,9 +31,9 @@ It asks for sudo once. After that it only prompts for things it can't know: git 
 | `60-flatpak` | Gear Lever |
 | `70-manual-installs` | Claude Code, SmartGit (`/opt/smartgit`), Zed, Bruno AppImage, Google Cloud SDK |
 | `80-toolchains` | fnm + Node 26, uv, rustup, Go, Java |
-| `85-shell` | antidote, Nerd Fonts, private fonts (copied from a folder you give it), zsh as login shell |
+| `85-fonts` | private fonts, copied from a folder you give it |
 | `88-groups-services` | docker/libvirt/kvm groups; docker, libvirtd and tailscaled services |
-| `90-dotfiles` | clone rcfiles, run its `configure.sh` and `setup-git-identity.sh` |
+| `90-dotfiles` | clone rcfiles and run its `install.sh`: antidote, bob + Neovim, tree-sitter, Nerd Fonts, zsh as login shell, dotfile links, git identity |
 | `95-post` | optional logins, then the list of manual sign-ins |
 
 Package lists are in the order things were installed on the reference machine.

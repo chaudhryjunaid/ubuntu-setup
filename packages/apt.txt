@@ -2,7 +2,7 @@
 # One or more package names per line; # starts a comment.
 kitty
 curl
-vim neovim git
+vim git
 zsh unzip ca-certificates fontconfig vim-gtk3 fzf ripgrep bat tmux wl-clipboard xclip xsel
 git-delta duf tmuxinator zoxide eza liquidprompt
 gnome-shell-extension-manager gnome-tweaks
@@ -17,3 +17,4 @@ solaar               # Logitech devices
 qemu-system-x86 qemu-utils libvirt-daemon-system libvirt-clients virt-manager ovmf swtpm
 gnome-boxes
 libgl1-mesa-dri mesa-vulkan-drivers mesa-utils vulkan-tools vainfo
+ghostty

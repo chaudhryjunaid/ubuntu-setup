@@ -7,7 +7,7 @@ log "User groups"
 for group in docker libvirt kvm; do
     if ! getent group "$group" >/dev/null; then
         warn "group $group does not exist"
-    elif id -nG "$(id -un)" | grep -qw "$group"; then
+    elif id -nG "$(id -un)" | tr ' ' '\n' | grep -qx "$group"; then
         info "already in $group"
     else
         $SUDO usermod -aG "$group" "$(id -un)"
