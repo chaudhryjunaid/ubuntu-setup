@@ -1,0 +1,6 @@
+# Packages with no apt repo: <package> <source>
+# <source> is a URL, or gh:<owner/repo>:<asset regex> for the newest GitHub release asset.
+mongodb-compass         gh:mongodb-js/compass:^mongodb-compass_[0-9.]+_amd64\.deb$
+mongodb-mongosh         gh:mongodb-js/mongosh:^mongodb-mongosh_[0-9.]+_amd64\.deb$
+mongodb-database-tools  https://fastdl.mongodb.org/tools/db/mongodb-database-tools-ubuntu2404-x86_64-100.19.0.deb
+obsidian                gh:obsidianmd/obsidian-releases:^obsidian_[0-9.]+_amd64\.deb$
