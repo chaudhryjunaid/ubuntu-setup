@@ -10,11 +10,11 @@ wget zip build-essential pkg-config htop btop iotop ncdu fd-find jq tree openssh
 python3-pip python3-venv shellcheck
 lm-sensors
 procs restic
-libfuse2t64          # AppImages (Bruno)
+libfuse2t64          # AppImages
 flatpak
 util-linux-extra
 solaar               # Logitech devices
 qemu-system-x86 qemu-utils libvirt-daemon-system libvirt-clients virt-manager ovmf swtpm
 gnome-boxes
 libgl1-mesa-dri mesa-vulkan-drivers mesa-utils vulkan-tools vainfo
-ghostty
+alacritty

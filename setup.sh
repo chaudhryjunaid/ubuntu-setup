@@ -5,7 +5,7 @@
 #
 # Usage:
 #   ./setup.sh             # run all steps
-#   ./setup.sh --from 40   # resume from step 40
+#   ./setup.sh --from 50   # resume from step 50
 #   ./setup.sh --only 70   # run just step 70
 
 # shellcheck source=lib/common.sh
@@ -16,7 +16,7 @@ ONLY=""
 while [ $# -gt 0 ]; do
     case "$1" in
         --from|--only)
-            [[ "${2:-}" =~ ^[0-9]+$ ]] || { echo "$1 needs a step number, e.g. $1 40" >&2; exit 1; }
+            [[ "${2:-}" =~ ^[0-9]+$ ]] || { echo "$1 needs a step number, e.g. $1 50" >&2; exit 1; }
             if [ "$1" = --from ]; then FROM="$2"; else ONLY="$2"; fi
             shift 2 ;;
         -h|--help) sed -n '3,10p' "$0"; exit 0 ;;

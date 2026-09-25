@@ -12,10 +12,10 @@ git clone https://github.com/chaudhryjunaid/ubuntu-setup ~/setup/ubuntu-setup
 ~/setup/ubuntu-setup/setup.sh
 ```
 
-It asks for sudo once. After that it only prompts for things it can't know: git identity, where your private fonts are, and optional SSH key, `gh`, and Tailscale logins. Log out and back in when it finishes.
+It asks for sudo once. After that it only prompts for things it can't know: git identity, where your private fonts are, and whether to generate an SSH key. Log out and back in when it finishes.
 
 ```sh
-./setup.sh --from 40   # resume after a failure
+./setup.sh --from 50   # resume after a failure
 ./setup.sh --only 70   # re-run one step
 ```
 
@@ -24,17 +24,14 @@ It asks for sudo once. After that it only prompts for things it can't know: git 
 | Step | What it does |
 |---|---|
 | `10-apt-base` | Ubuntu-archive packages (`packages/apt.txt`), plus Intel GPU drivers when an Intel GPU is present |
-| `20-apt-repos` | Third-party apt repos and keys, copied verbatim from `apt/files/` (mirrors `/`) |
-| `30-apt-repo-apps` | Chrome, Slack, Docker, Sublime, TablePlus, Dropbox, Tailscale, gh, ChatGPT, Claude (`packages/apt-repo.txt`) |
-| `40-debs` | MongoDB Compass/mongosh/database-tools and Obsidian from release downloads (`packages/debs.txt`) |
 | `50-snaps` | OnlyOffice, Foliate |
 | `60-flatpak` | Gear Lever |
-| `70-manual-installs` | Claude Code, SmartGit (`/opt/smartgit`), Zed, Bruno AppImage, Google Cloud SDK |
+| `70-manual-installs` | Claude Code, Zed, Google Cloud SDK |
 | `80-toolchains` | fnm + Node 26, uv, rustup, Go, Java |
 | `85-fonts` | private fonts, copied from a folder you give it |
-| `88-groups-services` | docker/libvirt/kvm groups; docker, libvirtd and tailscaled services |
+| `88-groups-services` | libvirt/kvm groups; libvirtd service |
 | `90-dotfiles` | clone rcfiles and run its `install.sh`: antidote, bob + Neovim, tree-sitter, Nerd Fonts, zsh as login shell, dotfile links, git identity |
-| `95-post` | optional logins, then the list of manual sign-ins |
+| `95-post` | optional SSH key, then the list of manual sign-ins |
 
 Package lists are in the order things were installed on the reference machine.
 
@@ -46,6 +43,6 @@ After installing or removing something on the reference machine:
 bin/inventory.sh
 ```
 
-It lists what's installed but not in `packages/*.txt` (`+`), what's listed but missing (`-`), and any apt repo file that differs from `apt/files/`. Update the lists by hand so the order is kept. For a new third-party repo, copy its `.list`/`.sources` file and keyring into `apt/files/` at the same path.
+It lists what's installed but not in `packages/*.txt` (`+`), and what's listed but missing (`-`). Update the lists by hand so the order is kept. Only Ubuntu-archive packages go in the apt lists: this setup adds no third-party apt repos or keys.
 
-Pinned versions to bump occasionally: `SMARTGIT_VERSION` in `steps/70-manual-installs.sh`, the mongodb-database-tools URL in `packages/debs.txt`, and `NODE_VERSION` in `steps/80-toolchains.sh`. The apt repo files name the `resolute` release, so update them when moving to a new Ubuntu release.
+The only pinned version is `NODE_VERSION` (a major version) in `steps/80-toolchains.sh`. Everything else installs the latest release, so don't add installs that download a hardcoded version.

@@ -25,41 +25,32 @@ read_list() {
     sed -e 's/#.*//' -e 's/[[:space:]]*$//' "$ROOT/packages/$1" | grep -v '^[[:space:]]*$' || true
 }
 
-# apt-get install only the packages that aren't installed yet.
+# True when apt has an installable version of the package.
+pkg_available() {
+    local candidate
+    candidate="$(apt-cache policy "$1" 2>/dev/null | awk '/Candidate:/ {print $2}')"
+    [ -n "$candidate" ] && [ "$candidate" != "(none)" ]
+}
+
+# apt-get install only the packages that aren't installed yet. Packages apt
+# doesn't know (renamed or dropped in a newer release) are skipped with a
+# warning, so one stale name doesn't fail the whole install.
 apt_install() {
     local missing=() p
     for p in "$@"; do
-        pkg_installed "$p" || missing+=("$p")
+        pkg_installed "$p" && continue
+        if pkg_available "$p"; then
+            missing+=("$p")
+        else
+            warn "skipping $p: not available from apt (renamed or removed?)"
+        fi
     done
     if [ "${#missing[@]}" -eq 0 ]; then
-        info "already installed: $*"
+        info "nothing to install from: $*"
         return
     fi
     info "installing: ${missing[*]}"
     $SUDO apt-get install -y "${missing[@]}"
-}
-
-# URL of the newest non-prerelease asset of a GitHub repo whose name matches $2
-# (a jq regex). Looks back a few releases since some releases skip platforms.
-gh_latest_asset() {
-    curl -fsSL "https://api.github.com/repos/$1/releases?per_page=10" \
-        | jq -r --arg re "$2" \
-            '[.[] | select(.prerelease | not) | .assets[] | select(.name | test($re)) | .browser_download_url][0] // empty'
-}
-
-# Download $2 to a temp file and run the command in $3... with the file as last arg.
-with_download() {
-    local url="$1" tmp file rc=0
-    shift
-    tmp="$(mktemp -d)"
-    file="$tmp/$(basename "${url%%\?*}")"
-    if curl -fL --progress-bar -o "$file" "$url"; then
-        "$@" "$file" || rc=$?
-    else
-        rc=$?
-    fi
-    rm -rf "$tmp"
-    return "$rc"
 }
 
 # Prompts read from the terminal so they work even when stdin is redirected;

@@ -2,7 +2,7 @@
 
 # inventory.sh — report drift between this machine and the package lists.
 # Run it on the reference machine after installing or removing something, then
-# update packages/*.txt (and apt/files/) by hand so the install order is kept.
+# update packages/*.txt by hand so the install order is kept.
 #
 #   + <name>   installed here but not in the lists
 #   - <name>   in the lists but not installed here
@@ -27,8 +27,7 @@ trap 'rm -rf "$tmp"' EXIT
 
 # apt: every package named in the lists vs. manually installed packages.
 {
-    read_list apt.txt; read_list apt-intel.txt; read_list apt-repo.txt
-    read_list debs.txt | awk '{print $1}'
+    read_list apt.txt; read_list apt-intel.txt
     echo golang-go default-jdk   # installed by steps/80-toolchains.sh
 } | tr ' ' '\n' | grep -v '^$' | sort -u >"$tmp/apt.listed"
 # Packages explicitly installed after the OS install: the non-automatic
@@ -58,14 +57,4 @@ read_list flatpak.txt | sort -u >"$tmp/flatpak.listed"
 flatpak list --app --columns=application 2>/dev/null | sort -u >"$tmp/flatpak.installed" || true
 drift flatpak "$tmp/flatpak.listed" "$tmp/flatpak.installed"
 
-# apt sources: files in apt/files vs. /etc/apt/sources.list.d (minus Ubuntu's own).
-find "$ROOT/apt/files/etc/apt/sources.list.d" -type f -printf '%f\n' | sort >"$tmp/src.listed"
-find /etc/apt/sources.list.d -type f -printf '%f\n' | grep -v '^ubuntu\.sources' | sort >"$tmp/src.installed"
-drift apt-sources "$tmp/src.listed" "$tmp/src.installed"
-changed=""
-while IFS= read -r -d '' src; do
-    dest="${src#"$ROOT/apt/files"}"
-    [ -e "$dest" ] && ! cmp -s "$src" "$dest" && changed+="  ~ $dest"$'\n'
-done < <(find "$ROOT/apt/files" -type f -print0 | sort -z)
-[ -n "$changed" ] && printf '\n[apt-files changed on this machine]\n%s' "$changed"
 exit 0
